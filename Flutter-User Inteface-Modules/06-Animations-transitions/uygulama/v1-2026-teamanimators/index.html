@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeamAnimators — Mobil Animasyon Stüdyosu & Scratch Laboratuvarı</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, #172554 0%, #090D16 45%, #050811 100%);
+      color: #F8FAFC;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    .code-font {
+      font-family: 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+    }
+
+    /* Gerçekçi Titanyum Telefon Çerçevesi (PC'de Mobil Görünüm) */
+    .phone-chassis {
+      width: 392px;
+      height: 790px;
+      border-radius: 54px;
+      padding: 12px;
+      background: linear-gradient(145deg, #334155 0%, #0F172A 45%, #1E293B 100%);
+      box-shadow:
+        0 0 0 2px #475569,
+        0 30px 80px -15px rgba(0, 0, 0, 0.85),
+        0 0 70px -10px rgba(56, 189, 248, 0.25);
+      position: relative;
+      flex-shrink: 0;
+    }
+    /* Yan Ses ve Güç Tuşları */
+    .phone-chassis::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 130px;
+      width: 4px;
+      height: 55px;
+      background: #475569;
+      border-radius: 4px 0 0 4px;
+      box-shadow: 0 70px 0 #475569;
+    }
+    .phone-chassis::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 165px;
+      width: 4px;
+      height: 80px;
+      background: #475569;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 43px;
+      background: linear-gradient(180deg, #0B1120 0%, #0F172A 55%, #131C31 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      width: 126px;
+      height: 27px;
+      background: #000000;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .dynamic-island.expanded {
+      width: 225px;
+      background: #050811;
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    /* Scratch Puzzle Blok Tasarımı */
+    .scratch-puzzle {
+      position: relative;
+      border-radius: 12px;
+      padding: 11px 14px;
+      border-left: 6px solid;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .scratch-puzzle:hover {
+      transform: translateX(4px);
+    }
+    .scratch-notch {
+      width: 24px;
+      height: 7px;
+      border-radius: 0 0 6px 6px;
+      margin-left: 20px;
+      opacity: 0.75;
+    }
+
+    /* Mobil Buton Etkileşimleri */
+    .m-btn {
+      transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .m-btn:hover {
+      transform: translateY(-2px);
+    }
+    .m-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Özel Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- ÜST STÜDYO BARI -->
+  <header class="border-b border-white/10 bg-slate-950/70 backdrop-blur-xl px-6 py-3 flex flex-wrap items-center justify-between gap-4 z-30">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-sky-500/25 font-black text-white text-sm">
+        TA
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-extrabold tracking-wider px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-400/30">
+            6. TAKIM · TEAMANIMATORS
+          </span>
+          <span class="text-xs text-slate-400 font-semibold hidden sm:inline">
+            SCÜ Şarkışla UBYO · Mobil Programlama I
+          </span>
+        </div>
+        <h1 class="text-sm sm:text-base font-black text-white tracking-tight mt-0.5">
+          Flutter Mobil Animasyon Stüdyosu &amp; Scratch Motor Denetçisi
+        </h1>
+      </div>
+    </div>
+
+    <!-- Hızlı Modül Seçici -->
+    <div class="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+      <button onclick="switchTab(0)" id="top-tab-0" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-slate-950 transition">1. Implicit</button>
+      <button onclick="switchTab(1)" id="top-tab-1" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">2. Explicit</button>
+      <button onclick="switchTab(2)" id="top-tab-2" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">3. Hero &amp; Rota</button>
+      <button onclick="switchTab(3)" id="top-tab-3" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">4. Interval</button>
+      <button onclick="switchTab(4)" id="top-tab-4" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">5. Fizik</button>
+    </div>
+  </header>
+
+  <!-- ANA SAHNE: SOLDA GERÇEKÇİ MOBİL TELEFON + SAĞDA SCRATCH & KOD STÜDYOSU -->
+  <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 flex flex-col xl:flex-row items-center xl:items-stretch justify-center gap-8">
+
+    <!-- ==================== SOL: İNTERAKTİF MOBİL TELEFON SİMÜLATÖRÜ ==================== -->
+    <div class="flex flex-col items-center justify-center">
+      <div class="phone-chassis">
+        <div class="phone-screen">
+
+          <!-- iOS / Android Durum Çubuğu + Dynamic Island -->
+          <div class="pt-2.5 px-6 pb-2 flex items-center justify-between text-xs font-bold text-slate-300 z-20">
+            <span>09:41</span>
+            <div id="dynamic-island" class="dynamic-island">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="island-text" class="text-[11px] font-extrabold text-sky-300 truncate">120Hz Impeller</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs">
+              <span>5G</span>
+              <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold">100%</span>
+            </div>
+          </div>
+
+          <!-- Mobil AppBar -->
+          <div class="px-5 py-2.5 bg-slate-900/80 backdrop-blur-md border-b border-white/10 flex items-center justify-between z-10">
+            <div>
+              <div id="mobile-appbar-badge" class="text-[10px] font-extrabold tracking-wider text-sky-400 uppercase">
+                MODÜL 01 · OTOPİLOT MODU
+              </div>
+              <div id="mobile-appbar-title" class="text-sm font-black text-white">
+                Örtük (Implicit) Animasyon
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/5 border border-white/10 text-slate-300 code-font" id="mobile-fps-pill">
+              60 FPS
+            </span>
+          </div>
+
+          <!-- MOBİL EKRAN ÜSTÜ CANLI HOVER/CLICK BİLDİRİM BALONU (HUD) -->
+          <div class="px-4 pt-2.5">
+            <div id="phone-hud" class="px-3 py-2 rounded-2xl bg-slate-900/95 border border-sky-500/40 shadow-lg flex items-center gap-2.5 transition-all">
+              <span id="hud-dot" class="w-2.5 h-2.5 rounded-full bg-sky-400 shrink-0"></span>
+              <div class="min-w-0 flex-1">
+                <div id="hud-action" class="text-[11px] font-extrabold text-sky-300 truncate code-font">
+                  Hover / Click ile API'yi İncele
+                </div>
+                <div id="hud-sub" class="text-[11px] text-slate-400 truncate">
+                  Aşağıdaki mobil bileşenlere dokunun
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== MOBİL EKRAN İÇERİĞİ (5 SEKME) ==================== -->
+          <div class="flex-1 p-4 overflow-y-auto flex flex-col justify-between relative">
+
+            <!-- SEKME 0: IMPLICIT (MOBİL) -->
+            <div id="m-tab-0" class="flex-1 flex flex-col justify-between space-y-3">
+              <!-- Mobil Sahne Kartı -->
+              <div class="relative flex-1 min-h-[210px] rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-white/10 flex flex-col items-center justify-center p-4 overflow-hidden shadow-inner">
+                <div class="absolute top-3 left-3.5 text-[11px] font-bold text-slate-400 code-font" id="imp-curve-label">
+                  Curves.easeOutBack
+                </div>
+                <div class="absolute top-3 right-3.5 text-[11px] font-bold text-amber-300">
+                  Kutuya Dokun!
+                </div>
+
+                <div id="imp-box"
+                     onmouseenter="inspectImplicit('HOVER (Kutu Üzerinde)', 'box')"
+                     onclick="toggleImplicitSize('CLICK (Kutuya Dokunuldu)')"
+                     style="width: 135px; height: 115px; border-radius: 22px; opacity: 1; transform: rotate(0deg); transition: all 650ms cubic-bezier(0.34, 1.56, 0.64, 1); background: linear-gradient(135deg, #38BDF8, #6366F1, #A855F7); box-shadow: 0 16px 35px rgba(99, 102, 241, 0.45);"
+                     class="cursor-pointer flex flex-col items-center justify-center text-white p-3 text-center select-none border border-white/25">
+                  <div class="text-3xl mb-1 drop-shadow">🐦</div>
+                  <div id="imp-size-text" class="code-font text-xs font-black tracking-tight">135×115</div>
+                  <div id="imp-op-text" class="text-[11px] text-white/85 font-semibold">α: 1.00</div>
+                </div>
+              </div>
+
+              <!-- Mobil Eğri Seçici Hapları -->
+              <div>
+                <div class="text-[11px] font-extrabold text-slate-400 mb-1.5 px-1">EĞRİ (CURVE) SEÇİMİ</div>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <button onclick="setImplicitCurve('Curves.easeOutBack', 'cubic-bezier(0.34, 1.56, 0.64, 1)')" class="m-btn py-1.5 px-2 rounded-xl text-[11px] font-bold bg-sky-500/20 text-sky-300 border border-sky-400/40 truncate">easeOutBack</button>
+                  <button onclick="setImplicitCurve('Curves.easeInOut', 'cubic-bezier(0.65, 0, 0.35, 1)')" class="m-btn py-1.5 px-2 rounded-xl text-[11px] font-bold bg-slate-800/90 text-slate-300 border border-slate-700 truncate">easeInOut</button>
+                  <button onclick="setImplicitCurve('Curves.linear', 'linear')" class="m-btn py-1.5 px-2 rounded-xl text-[11px] font-bold bg-slate-800/90 text-slate-300 border border-slate-700 truncate">linear</button>
+                </div>
+              </div>
+
+              <!-- 2x2 Mobil Kontrol Grid'i -->
+              <div class="grid grid-cols-2 gap-2">
+                <button onmouseenter="inspectImplicit('HOVER (Buton Üzerinde)', 'box')"
+                        onclick="toggleImplicitSize('CLICK (Boyut & Renk)')"
+                        class="m-btn p-2.5 rounded-2xl bg-sky-500/15 hover:bg-sky-500/30 border border-sky-400/40 flex items-center gap-2 text-left">
+                  <span class="w-8 h-8 rounded-xl bg-sky-500/20 flex items-center justify-center text-base shrink-0">📐</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-white truncate">Boyut &amp; Renk</div>
+                    <div class="text-[10px] text-sky-300 code-font truncate">AnimatedContainer</div>
+                  </div>
+                </button>
+
+                <button onmouseenter="inspectImplicit('HOVER (Buton Üzerinde)', 'radius')"
+                        onclick="toggleImplicitRadius('CLICK (Köşe Yuvarlat)')"
+                        class="m-btn p-2.5 rounded-2xl bg-purple-500/15 hover:bg-purple-500/30 border border-purple-400/40 flex items-center gap-2 text-left">
+                  <span class="w-8 h-8 rounded-xl bg-purple-500/20 flex items-center justify-center text-base shrink-0">⭕</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-white truncate">Köşe Şekli</div>
+                    <div class="text-[10px] text-purple-300 code-font truncate">BorderRadius</div>
+                  </div>
+                </button>
+
+                <button onmouseenter="inspectImplicit('HOVER (Buton Üzerinde)', 'opacity')"
+                        onclick="toggleImplicitOpacity('CLICK (Saydamlık)')"
+                        class="m-btn p-2.5 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-400/40 flex items-center gap-2 text-left">
+                  <span class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-base shrink-0">👁️</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-white truncate">Saydamlık</div>
+                    <div class="text-[10px] text-emerald-300 code-font truncate">AnimatedOpacity</div>
+                  </div>
+                </button>
+
+                <button onmouseenter="inspectImplicit('HOVER (Buton Üzerinde)', 'rotate')"
+                        onclick="rotateImplicitBox('CLICK (Döndür +90°)')"
+                        class="m-btn p-2.5 rounded-2xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/40 flex items-center gap-2 text-left">
+                  <span class="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center text-base shrink-0">🔄</span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-extrabold text-white truncate">Döndür +90°</div>
+                    <div class="text-[10px] text-amber-300 code-font truncate">TweenBuilder</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- SEKME 1: EXPLICIT (MOBİL) -->
+            <div id="m-tab-1" class="hidden flex-1 flex flex-col justify-between space-y-3">
+              <!-- Telemetri Kartı -->
+              <div class="p-3 rounded-2xl bg-slate-900/95 border border-purple-500/30 space-y-2">
+                <div class="flex justify-between items-center text-xs code-font font-bold">
+                  <span class="text-sky-400">t = <span id="exp-val">0.000</span></span>
+                  <span id="exp-status" class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[11px]">dismissed</span>
+                  <span id="exp-scale" class="text-emerald-400">0.65x</span>
+                </div>
+                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div id="exp-progress" style="width: 0%" class="h-full bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-500"></div>
+                </div>
+              </div>
+
+              <!-- Mobil Sahne -->
+              <div class="flex-1 min-h-[185px] rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-white/10 flex items-center justify-center overflow-hidden relative">
+                <div class="absolute top-2.5 left-3.5 text-[10px] font-bold text-slate-400 code-font">
+                  AnimatedBuilder + vsync: this
+                </div>
+                <div id="exp-widget"
+                     style="transform: scale(0.65) rotate(0deg);"
+                     class="px-4 py-3 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 shadow-2xl flex items-center gap-2.5 border border-white/25">
+                  <span class="text-2xl">⚡</span>
+                  <div>
+                    <div class="text-xs font-black text-white">Önbellekli Child</div>
+                    <div class="text-[10px] text-white/85">Sadece 1 kez build edildi</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Yönetmen Tuş Takımı -->
+              <div class="space-y-2">
+                <div class="text-[11px] font-extrabold text-slate-400 px-1">YÖNETMEN KONSOLU (AnimationController)</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button onmouseenter="inspectExplicit('HOVER (İleri Oynat)', 'forward')"
+                          onclick="runExplicit('forward')"
+                          class="m-btn py-2.5 px-3 rounded-2xl text-xs font-extrabold bg-sky-500/20 border border-sky-400/50 text-sky-200 flex items-center justify-center gap-1.5">
+                    ▶️ .forward()
+                  </button>
+                  <button onmouseenter="inspectExplicit('HOVER (Geri Sar)', 'reverse')"
+                          onclick="runExplicit('reverse')"
+                          class="m-btn py-2.5 px-3 rounded-2xl text-xs font-extrabold bg-purple-500/20 border border-purple-400/50 text-purple-200 flex items-center justify-center gap-1.5">
+                    ⏪ .reverse()
+                  </button>
+                  <button onmouseenter="inspectExplicit('HOVER (Sonsuz Döngü)', 'repeat')"
+                          onclick="runExplicit('repeat')"
+                          class="m-btn py-2.5 px-3 rounded-2xl text-xs font-extrabold bg-emerald-500/20 border border-emerald-400/50 text-emerald-200 flex items-center justify-center gap-1.5 col-span-2">
+                    🔁 .repeat(reverse: true) — Nabız Döngüsü
+                  </button>
+                  <button onmouseenter="inspectExplicit('HOVER (Dondur)', 'stop')"
+                          onclick="runExplicit('stop')"
+                          class="m-btn py-2 px-3 rounded-2xl text-xs font-extrabold bg-amber-500/20 border border-amber-400/50 text-amber-200 flex items-center justify-center gap-1.5">
+                    ⏸️ .stop()
+                  </button>
+                  <button onmouseenter="inspectExplicit('HOVER (Sıfırla)', 'reset')"
+                          onclick="runExplicit('reset')"
+                          class="m-btn py-2 px-3 rounded-2xl text-xs font-extrabold bg-rose-500/20 border border-rose-400/50 text-rose-200 flex items-center justify-center gap-1.5">
+                    ⏹️ .reset()
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SEKME 2: HERO & ROTA (GERÇEK MOBİL EKRAN GEÇİŞİ!) -->
+            <div id="m-tab-2" class="hidden flex-1 flex flex-col justify-between relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950">
+              <!-- 1. Kaynak Liste Ekranı -->
+              <div class="p-3.5 flex flex-col justify-between h-full space-y-3">
+                <div>
+                  <div class="text-xs font-extrabold text-emerald-400 mb-1">1. KAYNAK ROTA (Mobil Liste Ekranı)</div>
+                  <p class="text-[11px] text-slate-400">
+                    Aşağıdaki kartlardan birine dokunun; <code class="code-font text-sky-300">PageRouteBuilder</code> yeni ekranı kaydırırken <code class="code-font text-emerald-300">Hero</code> öğesi Overlay katmanında uçacaktır!
+                  </p>
+                </div>
+
+                <!-- Hero Kartları -->
+                <div class="space-y-2.5 my-auto">
+                  <div onmouseenter="inspectHero('HOVER (Hero Kartı 1)')"
+                       onclick="openMobileHeroRoute('🐦', 'Flutter Dash', 'hero-dash', '#38BDF8')"
+                       class="m-btn p-3 rounded-2xl bg-slate-900 border border-sky-500/40 cursor-pointer flex items-center gap-3 shadow-md">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-400 flex items-center justify-center text-2xl shrink-0">
+                      🐦
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-xs font-black text-white">Flutter Dash</div>
+                      <div class="text-[11px] text-sky-400 code-font truncate">Hero(tag: 'hero-dash')</div>
+                      <div class="text-[11px] text-slate-400">Dokun ➔ Detay Sayfasına Uçur</div>
+                    </div>
+                    <span class="text-sky-400 text-sm">➔</span>
+                  </div>
+
+                  <div onmouseenter="inspectHero('HOVER (Hero Kartı 2)')"
+                       onclick="openMobileHeroRoute('🚀', 'Impeller 120Hz', 'hero-rocket', '#F97316')"
+                       class="m-btn p-3 rounded-2xl bg-slate-900 border border-orange-500/40 cursor-pointer flex items-center gap-3 shadow-md">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-500/20 border border-orange-400 flex items-center justify-center text-2xl shrink-0">
+                      🚀
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-xs font-black text-white">Impeller 120Hz</div>
+                      <div class="text-[11px] text-orange-400 code-font truncate">Hero(tag: 'hero-rocket')</div>
+                      <div class="text-[11px] text-slate-400">Dokun ➔ Detay Sayfasına Uçur</div>
+                    </div>
+                    <span class="text-orange-400 text-sm">➔</span>
+                  </div>
+                </div>
+
+                <!-- Rota Offset Seçici -->
+                <div>
+                  <div class="text-[10px] font-extrabold text-slate-400 mb-1">SLIDETRANSITION KESİRLİ OFFSET YÖNÜ:</div>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <button onclick="setHeroOffset('Offset(0.0, 1.0) Alttan', 'translateY(100%)')" class="py-1.5 px-2 rounded-xl text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 code-font">Offset(0, 1) Alttan</button>
+                    <button onclick="setHeroOffset('Offset(1.0, 0.0) Sağdan', 'translateX(100%)')" class="py-1.5 px-2 rounded-xl text-[11px] font-bold bg-slate-800 text-slate-300 border border-slate-700 code-font">Offset(1, 0) Sağdan</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. Hedef Detay Ekranı (Telefonun İçinde Kayarak Açılan Gerçek Sayfa!) -->
+              <div id="mobile-detail-route"
+                   style="transform: translateY(100%); opacity: 0; pointer-events: none; transition: all 520ms cubic-bezier(0.22, 1, 0.36, 1);"
+                   class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-950 to-black p-4 flex flex-col justify-between z-20">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                  <button onclick="closeMobileHeroRoute()" class="px-2.5 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white flex items-center gap-1">
+                    ⬅️ Geri (pop)
+                  </button>
+                  <span class="text-xs font-extrabold text-emerald-400 code-font">2. HEDEF ROTA</span>
+                </div>
+
+                <div class="my-auto flex flex-col items-center text-center space-y-3">
+                  <div id="detail-hero-box"
+                       style="transform: scale(0.4); transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1);"
+                       class="w-24 h-24 rounded-3xl bg-sky-500/20 border-2 border-sky-400 flex items-center justify-center text-5xl shadow-2xl">
+                    🐦
+                  </div>
+                  <div id="detail-hero-title" class="text-base font-black text-white">Flutter Dash</div>
+                  <div id="detail-hero-tag" class="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-xs code-font font-bold text-emerald-300">
+                    Hero(tag: 'hero-dash') İniş Yaptı!
+                  </div>
+                  <p class="text-xs text-slate-300 leading-relaxed px-2">
+                    Widget <code class="code-font text-sky-300">Overlay</code> katmanında kavisli yay (<code class="code-font">MaterialRectArcTween</code>) çizerek bu sayfaya yerleşti.
+                  </p>
+                </div>
+
+                <button onclick="closeMobileHeroRoute()" class="m-btn w-full py-2.5 rounded-2xl bg-emerald-500 text-slate-950 font-black text-xs shadow-lg">
+                  ⬅️ Navigator.pop(context) ile Kaynak Rotaya Dön
+                </button>
+              </div>
+            </div>
+
+            <!-- SEKME 3: STAGGERED INTERVAL (MOBİL) -->
+            <div id="m-tab-3" class="hidden flex-1 flex flex-col justify-between space-y-3">
+              <!-- Canlı Koreografi Sahnesi -->
+              <div class="h-36 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-white/10 flex items-center justify-center overflow-hidden">
+                <div id="stag-box"
+                     style="width: 68px; height: 55px; opacity: 0.25; border-radius: 10px; background: #3B82F6;"
+                     class="flex items-center justify-center text-center text-xs font-extrabold code-font text-white shadow-2xl border border-white/25">
+                  t = 0.00
+                </div>
+              </div>
+
+              <!-- Mobil Gantt Çizelgesi -->
+              <div class="p-3 rounded-2xl bg-slate-900/95 border border-amber-500/30 space-y-1.5">
+                <div class="flex justify-between text-[11px] font-extrabold">
+                  <span class="text-slate-400">INTERVAL ZAMAN DİLİMLERİ</span>
+                  <span id="stag-pct" class="text-amber-400 code-font">Saat: %0</span>
+                </div>
+                <div class="space-y-1.5 text-[11px]">
+                  <div class="flex items-center gap-2">
+                    <span class="w-16 text-sky-400 font-bold truncate">Opacity</span>
+                    <div class="flex-1 h-3.5 bg-slate-800 rounded-full relative overflow-hidden">
+                      <div style="left:0%; width:20%" class="absolute inset-y-0 bg-sky-500 rounded-full"></div>
+                      <div id="playhead-1" style="left:0%" class="absolute inset-y-0 w-0.5 bg-amber-300"></div>
+                    </div>
+                    <span class="code-font text-[10px] text-slate-400">0.0–0.2</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="w-16 text-indigo-400 font-bold truncate">Width</span>
+                    <div class="flex-1 h-3.5 bg-slate-800 rounded-full relative overflow-hidden">
+                      <div style="left:15%; width:30%" class="absolute inset-y-0 bg-indigo-500 rounded-full"></div>
+                      <div id="playhead-2" style="left:0%" class="absolute inset-y-0 w-0.5 bg-amber-300"></div>
+                    </div>
+                    <span class="code-font text-[10px] text-slate-400">0.15–0.45</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="w-16 text-purple-400 font-bold truncate">Height</span>
+                    <div class="flex-1 h-3.5 bg-slate-800 rounded-full relative overflow-hidden">
+                      <div style="left:40%; width:30%" class="absolute inset-y-0 bg-purple-500 rounded-full"></div>
+                      <div id="playhead-3" style="left:0%" class="absolute inset-y-0 w-0.5 bg-amber-300"></div>
+                    </div>
+                    <span class="code-font text-[10px] text-slate-400">0.40–0.70</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="w-16 text-pink-400 font-bold truncate">Radius</span>
+                    <div class="flex-1 h-3.5 bg-slate-800 rounded-full relative overflow-hidden">
+                      <div style="left:60%; width:25%" class="absolute inset-y-0 bg-pink-500 rounded-full"></div>
+                      <div id="playhead-4" style="left:0%" class="absolute inset-y-0 w-0.5 bg-amber-300"></div>
+                    </div>
+                    <span class="code-font text-[10px] text-slate-400">0.60–0.85</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="w-16 text-emerald-400 font-bold truncate">Color</span>
+                    <div class="flex-1 h-3.5 bg-slate-800 rounded-full relative overflow-hidden">
+                      <div style="left:75%; width:25%" class="absolute inset-y-0 bg-emerald-500 rounded-full"></div>
+                      <div id="playhead-5" style="left:0%" class="absolute inset-y-0 w-0.5 bg-amber-300"></div>
+                    </div>
+                    <span class="code-font text-[10px] text-slate-400">0.75–1.0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Koreografi Butonları -->
+              <div class="grid grid-cols-2 gap-2">
+                <button onmouseenter="inspectStaggered('HOVER (Başlat)', '_controller.forward()')"
+                        onclick="runStaggered(1)"
+                        class="m-btn py-2.5 px-3 rounded-2xl text-xs font-extrabold bg-emerald-500/20 border border-emerald-400/50 text-emerald-200">
+                  ▶️ Başlat (.forward)
+                </button>
+                <button onmouseenter="inspectStaggered('HOVER (Geri Sar)', '_controller.reverse()')"
+                        onclick="runStaggered(-1)"
+                        class="m-btn py-2.5 px-3 rounded-2xl text-xs font-extrabold bg-amber-500/20 border border-amber-400/50 text-amber-200">
+                  ⏪ Geri Sar (.reverse)
+                </button>
+              </div>
+            </div>
+
+            <!-- SEKME 4: FİZİK SPRINGSIMULATION (MOBİL) -->
+            <div id="m-tab-4" class="hidden flex-1 flex flex-col justify-between space-y-2.5">
+              <!-- Fizik Sürükleme Sahnesi -->
+              <div id="phys-stage" class="relative h-44 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-white/10 overflow-hidden flex items-center justify-center">
+                <div id="phys-telemetry" class="absolute top-2.5 left-3 text-[10px] code-font text-slate-400">
+                  Alignment(0.00, 0.00) · Merkezde
+                </div>
+                <div id="phys-card"
+                     onmousedown="startDragPhys(event)"
+                     class="cursor-grab active:cursor-grabbing w-28 h-16 rounded-2xl bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 shadow-2xl flex flex-col items-center justify-center text-white font-black text-xs select-none border border-white/30">
+                  <span class="text-lg">🏀</span>
+                  <span class="text-[11px]">Tutup Bırak!</span>
+                </div>
+              </div>
+
+              <!-- Yay Ayarları -->
+              <div class="p-3 rounded-2xl bg-slate-900/95 border border-rose-500/30 space-y-1.5 text-[11px]">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="w-36 font-bold text-sky-400">mass (Kütle): <span id="lbl-mass">12</span></span>
+                  <input id="rng-mass" type="range" min="2" max="35" value="12" oninput="document.getElementById('lbl-mass').innerText=this.value" class="flex-1 accent-sky-400" />
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="w-36 font-bold text-purple-400">stiffness (Yay): <span id="lbl-stiff">180</span></span>
+                  <input id="rng-stiff" type="range" min="40" max="400" value="180" oninput="document.getElementById('lbl-stiff').innerText=this.value" class="flex-1 accent-purple-400" />
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="w-36 font-bold text-emerald-400">damping (Sönüm): <span id="lbl-damp">8</span></span>
+                  <input id="rng-damp" type="range" min="2" max="25" value="8" oninput="document.getElementById('lbl-damp').innerText=this.value" class="flex-1 accent-emerald-400" />
+                </div>
+              </div>
+
+              <button onmouseenter="inspectPhysics('HOVER (Yayla Fırlat)')"
+                      onclick="flingPhysicsCard()"
+                      class="m-btn w-full py-2.5 rounded-2xl text-xs font-extrabold bg-rose-500 text-white shadow-lg shadow-rose-500/25">
+                🚀 Köşeden Fırlat (controller.animateWith)
+              </button>
+            </div>
+
+          </div>
+
+          <!-- MOBİL ALT NAVİGASYON BARI (NAVIGATIONBAR) -->
+          <div class="px-3 pt-2 pb-4 bg-slate-950/95 border-t border-white/10">
+            <div class="grid grid-cols-5 gap-1">
+              <button onclick="switchTab(0)" id="nav-0" class="flex flex-col items-center py-1.5 rounded-2xl bg-sky-500/15 text-sky-400 transition">
+                <span class="text-base">✨</span>
+                <span class="text-[10px] font-extrabold mt-0.5">Implicit</span>
+              </button>
+              <button onclick="switchTab(1)" id="nav-1" class="flex flex-col items-center py-1.5 rounded-2xl text-slate-400 hover:text-white transition">
+                <span class="text-base">🎛️</span>
+                <span class="text-[10px] font-bold mt-0.5">Explicit</span>
+              </button>
+              <button onclick="switchTab(2)" id="nav-2" class="flex flex-col items-center py-1.5 rounded-2xl text-slate-400 hover:text-white transition">
+                <span class="text-base">🚀</span>
+                <span class="text-[10px] font-bold mt-0.5">Hero</span>
+              </button>
+              <button onclick="switchTab(3)" id="nav-3" class="flex flex-col items-center py-1.5 rounded-2xl text-slate-400 hover:text-white transition">
+                <span class="text-base">📊</span>
+                <span class="text-[10px] font-bold mt-0.5">Interval</span>
+              </button>
+              <button onclick="switchTab(4)" id="nav-4" class="flex flex-col items-center py-1.5 rounded-2xl text-slate-400 hover:text-white transition">
+                <span class="text-base">🏀</span>
+                <span class="text-[10px] font-bold mt-0.5">Fizik</span>
+              </button>
+            </div>
+            <!-- iOS Ana Ekran Çizgisi (Home Indicator) -->
+            <div class="w-32 h-1 bg-white/30 rounded-full mx-auto mt-2.5"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SAĞ: SCRATCH BLOK & CANLI MOTOR STÜDYOSU ==================== -->
+    <div class="flex-1 flex flex-col justify-between bg-slate-900/65 backdrop-blur-2xl rounded-3xl border border-white/10 p-6 shadow-2xl space-y-5">
+
+      <!-- Üst Denetçi Başlığı -->
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-sky-500/15 border border-sky-400/40 flex items-center justify-center text-xl">
+            🧩
+          </div>
+          <div>
+            <div class="text-xs font-extrabold text-sky-400 tracking-wider uppercase">
+              CANLI KAPUT ALTI ANALİZÖRÜ
+            </div>
+            <h2 class="text-base sm:text-lg font-black text-white">
+              Scratch Blok Zinciri &amp; Flutter API Denetçisi
+            </h2>
+          </div>
+        </div>
+        <span id="insp-badge" class="px-3.5 py-1 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400">
+          CANLI İZLEME AKTİF
+        </span>
+      </div>
+
+      <!-- Çağrılan İşlem & Açıklama Kartı -->
+      <div class="p-4 rounded-2xl bg-slate-950/85 border border-white/10 space-y-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <h3 id="insp-title" class="text-base font-black text-white">
+            Soldaki Mobil Cihazda Herhangi Bir Öğeye Hover / Click Yapın!
+          </h3>
+        </div>
+        <div class="px-3.5 py-2 rounded-xl bg-sky-950/50 border border-sky-400/40 flex items-center gap-2">
+          <span class="text-sky-400 text-sm">⚡</span>
+          <span id="insp-api" class="code-font text-xs sm:text-sm font-bold text-sky-300 break-all">
+            Çağrılan API: Ticker (vsync) ➔ AnimationController ➔ Curve ➔ Tween&lt;T&gt; ➔ Widget
+          </span>
+        </div>
+        <p id="insp-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Soldaki telefon ekranındaki butonların üzerine fareyle geldiğinizde (<strong class="text-amber-300">Hover</strong>) veya dokunduğunuzda (<strong class="text-emerald-300">Click</strong>), Flutter motorunun arka planda hangi sınıfları tetiklediğini aşağıdaki Scratch yapboz bloklarında adım adım görebilirsiniz.
+        </p>
+      </div>
+
+      <!-- Orta Grid: Scratch Yapboz Blokları + IDE Kod Kutusu -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+        <!-- Scratch Blokları (6 Sütun) -->
+        <div class="lg:col-span-6 flex flex-col justify-between space-y-2">
+          <div class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">
+            🧩 Scratch Motor Akış Blokları
+          </div>
+          <div id="insp-blocks" class="space-y-1 flex-1 flex flex-col justify-center">
+            <!-- JS ile doldurulur -->
+          </div>
+        </div>
+
+        <!-- IDE Dart Kod Kutusu (6 Sütun) -->
+        <div class="lg:col-span-6 flex flex-col justify-between space-y-2">
+          <div class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">
+            💻 Tetiklenen Gerçek Flutter / Dart Kodu
+          </div>
+          <div class="flex-1 rounded-2xl bg-[#040711] border border-slate-800 overflow-hidden flex flex-col shadow-inner">
+            <div class="px-3.5 py-2 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <span class="text-[11px] code-font text-slate-400">teamanimators_mobile_lab.dart</span>
+            </div>
+            <pre id="insp-code" class="code-font text-xs p-4 text-sky-100 overflow-x-auto leading-relaxed flex-1 m-0"></pre>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Alt Bölüm: Canlı Çağrı Günlüğü (Call Stack Terminal) -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">
+              Canlı Çağrı Günlüğü (Call Stack Terminal)
+            </span>
+          </div>
+          <button onclick="document.getElementById('call-log').innerHTML=''" class="text-xs text-sky-400 hover:underline font-bold">
+            Temizle
+          </button>
+        </div>
+        <div id="call-log" class="h-28 overflow-y-auto rounded-2xl bg-[#040711] border border-slate-800 p-3 space-y-1.5 code-font text-xs">
+          <div class="text-slate-400">
+            <span class="text-emerald-400 font-bold">[BAŞLATILDI]</span> Mobil Simülatör (120Hz Impeller) ve Scratch Denetçisi hazır.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // =========================================================================
+    // SCRATCH VE MOBİL HUD GÜNCELLEYİCİ
+    // =========================================================================
+    function updateInspector({ trigger, title, api, desc, code, blocks, logIt = false }) {
+      const badge = document.getElementById('insp-badge');
+      badge.innerText = trigger;
+      const isHover = trigger.startsWith('HOVER');
+      badge.className = isHover
+        ? 'px-3.5 py-1 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-300 border border-amber-400'
+        : 'px-3.5 py-1 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400';
+
+      document.getElementById('insp-title').innerText = title;
+      document.getElementById('insp-api').innerText = 'Çağrılan API: ' + api;
+      document.getElementById('insp-desc').innerText = desc;
+      document.getElementById('insp-code').innerText = code;
+
+      // Telefon içi HUD ve Dynamic Island güncellemesi
+      document.getElementById('hud-action').innerText = api;
+      document.getElementById('hud-sub').innerText = trigger + ' · ' + title;
+      document.getElementById('hud-dot').className = isHover
+        ? 'w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0'
+        : 'w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0';
+
+      const island = document.getElementById('dynamic-island');
+      const islandTxt = document.getElementById('island-text');
+      island.classList.add('expanded');
+      islandTxt.innerText = isHover ? '🔍 Hover: ' + api.slice(0, 18) : '⚡ ' + api.slice(0, 20);
+      clearTimeout(updateInspector.islandTimer);
+      updateInspector.islandTimer = setTimeout(() => {
+        island.classList.remove('expanded');
+        islandTxt.innerText = '120Hz Impeller';
+      }, 1600);
+
+      // Scratch Puzzle Blokları
+      const blockContainer = document.getElementById('insp-blocks');
+      blockContainer.innerHTML = blocks.map((b, i) => `
+        <div>
+          <div class="scratch-puzzle border border-white/10 shadow-md" style="border-left-color: ${b.color}">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black tracking-wide" style="color: ${b.color}">${b.label}</span>
+              <span class="text-[10px] code-font px-2 py-0.5 rounded bg-white/5 text-slate-400">Adım ${i + 1}</span>
+            </div>
+            <div class="text-xs text-slate-200 mt-1 font-medium">${b.detail}</div>
+          </div>
+          ${i < blocks.length - 1 ? `<div class="scratch-notch" style="background: ${b.color}"></div>` : ''}
+        </div>
+      `).join('');
+
+      if (logIt) {
+        const now = new Date();
+        const tStr = now.toTimeString().split(' ')[0];
+        const logEl = document.getElementById('call-log');
+        const row = document.createElement('div');
+        row.innerHTML = `<span class="text-slate-500">[${tStr}]</span> <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">${trigger.split(' ')[0]}</span> <span class="text-sky-300 font-bold">${api}</span>`;
+        logEl.prepend(row);
+      }
+    }
+
+    // İlk Yükleme
+    updateInspector({
+      trigger: 'HAZIR',
+      title: 'Soldaki Mobil Cihazda Herhangi Bir Öğeye Hover / Click Yapın!',
+      api: 'Ticker (vsync) ➔ AnimationController ➔ Curve ➔ Tween<T> ➔ Widget',
+      desc: 'Telefon ekranındaki butonların veya kartların üzerine fareyle gelin (Hover) ya da tıklayın (Click). Hangi Flutter API çağrısının tetiklendiğini, Scratch blok zincirini ve gerçek Dart kodunu anında inceleyin.',
+      code: `// 6. Takım: TeamAnimators\n// Mobil Simülatör Modülleri:\n// 1. Implicit (AnimatedContainer, AnimatedOpacity, TweenAnimationBuilder)\n// 2. Explicit (AnimationController, vsync, AnimatedBuilder)\n// 3. Hero & PageRouteBuilder (SlideTransition + Overlay)\n// 4. Staggered Koreografi (Interval 0.0 -> 1.0)\n// 5. Fizik Simülasyonu (SpringSimulation + animateWith)`,
+      blocks: [
+        { label: '1. OLAY ALGILAYICI (EVENT)', detail: 'Mobil ekranda Hover / Click / Sürükleme yakalanır', color: '#F59E0B' },
+        { label: '2. ZAMANLAYICI MOTOR (TICKER)', detail: 'setState() veya AnimationController (0.0 ➔ 1.0) tetiklenir', color: '#38BDF8' },
+        { label: '3. DÖNÜŞÜM (CURVE & TWEEN)', detail: 'Boyutsuz zaman hedef veri tipine (Color, Offset, double) çevrilir', color: '#A855F7' },
+        { label: '4. İZOLE ÇİZİM (120 FPS)', detail: 'Sadece değişen widget güncellenir; sabit child korunur', color: '#10B981' }
+      ]
+    });
+
+    // Sekme Değiştirici (Hem üst bar hem telefonun alt NavigationBar'ı senkron çalışır)
+    const tabMeta = [
+      { badge: 'MODÜL 01 · OTOPİLOT MODU', title: 'Örtük (Implicit) Animasyon' },
+      { badge: 'MODÜL 02 · YÖNETMEN KOLTUĞU', title: 'Açık (Explicit) Animasyon' },
+      { badge: 'MODÜL 03 · OVERLAY UÇUŞU', title: 'Hero & PageRouteBuilder' },
+      { badge: 'MODÜL 04 · ZAMAN DİLİMLEYİCİ', title: 'Kademeli (Staggered) Interval' },
+      { badge: 'MODÜL 05 · HOOKE YAY FİZİĞİ', title: 'SpringSimulation & Fizik' }
+    ];
+
+    function switchTab(idx) {
+      for (let i = 0; i < 5; i++) {
+        document.getElementById('m-tab-' + i).classList.toggle('hidden', i !== idx);
+        const navBtn = document.getElementById('nav-' + i);
+        navBtn.className = i === idx
+          ? 'flex flex-col items-center py-1.5 rounded-2xl bg-sky-500/20 text-sky-400 transition'
+          : 'flex flex-col items-center py-1.5 rounded-2xl text-slate-400 hover:text-white transition';
+        const topBtn = document.getElementById('top-tab-' + i);
+        topBtn.className = i === idx
+          ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-slate-950 transition'
+          : 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition';
+      }
+      document.getElementById('mobile-appbar-badge').innerText = tabMeta[idx].badge;
+      document.getElementById('mobile-appbar-title').innerText = tabMeta[idx].title;
+    }
+
+    // =========================================================================
+    // SEKME 0: IMPLICIT
+    // =========================================================================
+    let impExpanded = false, impRounded = false, impVisible = true, impAngle = 0;
+    let impCurveName = 'Curves.easeOutBack';
+
+    function syncImplicitBox() {
+      const box = document.getElementById('imp-box');
+      const w = impExpanded ? 215 : 135;
+      const h = impExpanded ? 145 : 115;
+      box.style.width = w + 'px';
+      box.style.height = h + 'px';
+      box.style.borderRadius = (impRounded ? 60 : 22) + 'px';
+      box.style.opacity = impVisible ? '1' : '0.2';
+      box.style.transform = `rotate(${impAngle}deg)`;
+      box.style.background = impExpanded
+        ? 'linear-gradient(135deg, #F97316, #EC4899)'
+        : 'linear-gradient(135deg, #38BDF8, #6366F1, #A855F7)';
+      document.getElementById('imp-size-text').innerText = `${w}×${h}`;
+      document.getElementById('imp-op-text').innerText = `α: ${impVisible ? '1.00' : '0.20'}`;
+    }
+
+    function toggleImplicitSize(trig) { impExpanded = !impExpanded; syncImplicitBox(); inspectImplicit(trig, 'box', true); }
+    function toggleImplicitRadius(trig) { impRounded = !impRounded; syncImplicitBox(); inspectImplicit(trig, 'radius', true); }
+    function toggleImplicitOpacity(trig) { impVisible = !impVisible; syncImplicitBox(); inspectImplicit(trig, 'opacity', true); }
+    function rotateImplicitBox(trig) { impAngle += 90; syncImplicitBox(); inspectImplicit(trig, 'rotate', true); }
+
+    function setImplicitCurve(name, cssBezier) {
+      impCurveName = name;
+      document.getElementById('imp-curve-label').innerText = name;
+      document.getElementById('imp-box').style.transitionTimingFunction = cssBezier;
+      updateInspector({
+        trigger: 'EĞRİ SEÇİLDİ',
+        title: 'İvme Eğrisi Güncellendi: ' + name,
+        api: 'curve: ' + name,
+        desc: 'Doğrusal ilerleme (0.0 ➔ 1.0) artık ' + name + ' fonksiyonuyla bükülüyor. Şimdi mobil butonlara dokunarak ivme farkını görün!',
+        code: `AnimatedContainer(\n  duration: const Duration(milliseconds: 650),\n  curve: ${name},\n  width: _expanded ? 215 : 135,\n  height: _expanded ? 145 : 115,\n)`,
+        blocks: [
+          { label: '1. DOĞRUSAL ZAMAN (t)', detail: '0.0 ile 1.0 arasında sabit hızda ilerleyen süre', color: '#38BDF8' },
+          { label: '2. CURVE DÖNÜŞÜMÜ', detail: name + ' ile hızlanma ve frenleme uygulanır', color: '#A855F7' }
+        ],
+        logIt: true
+      });
+    }
+
+    function inspectImplicit(trig, type, logIt = false) {
+      const data = {
+        box: {
+          title: 'AnimatedContainer: Boyut ve Renk İnterpolasyonu',
+          api: 'setState(() => _expanded = !_expanded)',
+          desc: 'Sadece hedef genişlik/yükseklik ve renk bildirilir. AnimatedContainer kendi iç Tween nesnelerini kurar ve 650ms boyunca ara kareleri otomatik çizer.',
+          code: `setState(() => _expanded = !_expanded);\n\nAnimatedContainer(\n  duration: const Duration(milliseconds: 650),\n  curve: ${impCurveName},\n  width: _expanded ? 215 : 135,\n  height: _expanded ? 145 : 115,\n)`,
+          blocks: [
+            { label: '1. OLAY (ONTAP)', detail: 'Kullanıcı dokunuşuyla setState() tetiklendi', color: '#F59E0B' },
+            { label: '2. IMPLICITLYANIMATEDWIDGET', detail: 'Eski (135×115) ve yeni (215×145) farkı algılandı', color: '#38BDF8' },
+            { label: '3. DAHİLİ TWEEN & CURVE', detail: impCurveName + ' ile ara piksel ve renkler üretildi', color: '#A855F7' },
+            { label: '4. OTOPİLOT ÇİZİM', detail: 'Controller veya dispose() yazmadan geçiş tamamlandı', color: '#10B981' }
+          ]
+        },
+        radius: {
+          title: 'AnimatedContainer: BorderRadiusTween Geçişi',
+          api: 'setState(() => _rounded = !_rounded)',
+          desc: 'BoxDecoration içindeki borderRadius değiştiğinde arka planda BorderRadiusTween çalışır ve köşeleri yumuşakça yuvarlatır.',
+          code: `AnimatedContainer(\n  duration: const Duration(milliseconds: 650),\n  decoration: BoxDecoration(\n    borderRadius: BorderRadius.circular(_rounded ? 60 : 22),\n  ),\n)`,
+          blocks: [
+            { label: '1. OLAY', detail: 'Köşe Şekli butonu tetiklendi', color: '#F59E0B' },
+            { label: '2. BORDERRADIUSTWEEN', detail: '22px ➔ 60px ara yarıçap değerleri hesaplanır', color: '#A855F7' },
+            { label: '3. RENDER', detail: 'Kutu köşeleri 60 FPS akıcılıkta yuvarlanır', color: '#10B981' }
+          ]
+        },
+        opacity: {
+          title: 'AnimatedOpacity: GPU Dostu Saydamlık Geçişi',
+          api: 'setState(() => _visible = !_visible)',
+          desc: 'Alt widget ağacını yeniden oluşturmadan (rebuild etmeden) GPU alfa katmanında yumuşak görünürlük geçişi sağlar.',
+          code: `AnimatedOpacity(\n  opacity: _visible ? 1.0 : 0.20,\n  duration: const Duration(milliseconds: 500),\n  child: const FlutterDashCard(),\n)`,
+          blocks: [
+            { label: '1. HEDEF SAYDAMLIK', detail: 'opacity: 1.00 ➔ 0.20 olarak güncellendi', color: '#F59E0B' },
+            { label: '2. GPU ALFA KATMANI', detail: 'Alt ağaç rebuild edilmeden saydamlık değiştirilir', color: '#10B981' }
+          ]
+        },
+        rotate: {
+          title: 'TweenAnimationBuilder<double>: Özel Örtük Kontrol',
+          api: 'TweenAnimationBuilder<double>(tween: Tween(begin: 0, end: _angle))',
+          desc: 'Hazır bir AnimatedFoo widget\'ı olmadığında AnimationController açmadan özel bir özelliği anime eder. child parametresi sabit alt ağacı önbellekte tutar!',
+          code: `TweenAnimationBuilder<double>(\n  tween: Tween<double>(begin: 0, end: _targetAngle),\n  duration: const Duration(milliseconds: 700),\n  child: const HeavyCard(), // Sadece 1 kez oluşturulur!\n  builder: (context, angle, staticChild) {\n    return Transform.rotate(angle: angle, child: staticChild);\n  },\n)`,
+          blocks: [
+            { label: '1. HEDEF AÇI', detail: '_targetAngle += pi / 2 (+90°)', color: '#F59E0B' },
+            { label: '2. TWEEN<DOUBLE>', detail: 'Mevcut açıdan yeni açıya ara radyan üretilir', color: '#A855F7' },
+            { label: '3. CHILD ÖNBELLEKLEME', detail: 'staticChild korunur, yalnızca Transform güncellenir', color: '#10B981' }
+          ]
+        }
+      };
+      updateInspector({ trigger: trig, ...data[type], logIt });
+    }
+
+    // =========================================================================
+    // SEKME 1: EXPLICIT
+    // =========================================================================
+    let expVal = 0.0, expDir = 0, expStatus = 'dismissed', lastExpTime = performance.now();
+
+    function tickExplicit(now) {
+      const dt = (now - lastExpTime) / 1200;
+      lastExpTime = now;
+      if (expDir !== 0) {
+        if (expDir === 1) {
+          expVal = Math.min(1.0, expVal + dt);
+          expStatus = expVal >= 1.0 ? 'completed' : 'forward';
+          if (expVal >= 1.0) expDir = 0;
+        } else if (expDir === -1) {
+          expVal = Math.max(0.0, expVal - dt);
+          expStatus = expVal <= 0.0 ? 'dismissed' : 'reverse';
+          if (expVal <= 0.0) expDir = 0;
+        } else if (expDir === 2) {
+          expVal += dt * (tickExplicit.repSign || 1);
+          if (expVal >= 1.0) { expVal = 1.0; tickExplicit.repSign = -1; expStatus = 'reverse'; }
+          if (expVal <= 0.0) { expVal = 0.0; tickExplicit.repSign = 1; expStatus = 'forward'; }
+        }
+        renderExplicit();
+      }
+      requestAnimationFrame(tickExplicit);
+    }
+    requestAnimationFrame(tickExplicit);
+
+    function renderExplicit() {
+      const scale = 0.65 + (0.55 * expVal);
+      const rot = expVal * 360;
+      document.getElementById('exp-val').innerText = expVal.toFixed(3);
+      document.getElementById('exp-status').innerText = expStatus;
+      document.getElementById('exp-scale').innerText = scale.toFixed(2) + 'x';
+      document.getElementById('exp-progress').style.width = (expVal * 100) + '%';
+      document.getElementById('exp-widget').style.transform = `scale(${scale}) rotate(${rot}deg)`;
+    }
+
+    function runExplicit(cmd) {
+      if (cmd === 'forward') { expDir = 1; expStatus = 'forward'; }
+      if (cmd === 'reverse') { expDir = -1; expStatus = 'reverse'; }
+      if (cmd === 'repeat') { expDir = 2; tickExplicit.repSign = 1; expStatus = 'forward'; }
+      if (cmd === 'stop') { expDir = 0; }
+      if (cmd === 'reset') { expDir = 0; expVal = 0.0; expStatus = 'dismissed'; renderExplicit(); }
+      inspectExplicit('CLICK (Komut Çalıştırıldı)', cmd, true);
+    }
+
+    function inspectExplicit(trig, cmd, logIt = false) {
+      const calls = {
+        forward: '_controller.forward()',
+        reverse: '_controller.reverse()',
+        repeat: '_controller.repeat(reverse: true)',
+        stop: '_controller.stop()',
+        reset: '_controller.reset()'
+      };
+      const descs = {
+        forward: 'Animasyonu mevcut değerinden 1.0 üst sınırına doğru ileri yönde başlatır.',
+        reverse: 'Animasyonu mevcut konumundan 0.0 başlangıç noktasına doğru geriye sarar.',
+        repeat: 'Animasyonu durdurulana kadar 0.0 ➔ 1.0 ➔ 0.0 arasında ileri-geri nabız döngüsüne sokar.',
+        stop: 'Ticker sinyalini keserek animasyonu tam o anki karede dondurur.',
+        reset: 'Animasyonu durdurur ve değeri anında 0.0 alt sınırına sıfırlar.'
+      };
+      updateInspector({
+        trigger: trig,
+        title: 'AnimationController Komutu: ' + calls[cmd],
+        api: calls[cmd],
+        desc: descs[cmd] + ' SingleTickerProviderStateMixin (vsync: this) ekran dışı kare üretimini engeller; dispose() ise bellek sızıntısını önler.',
+        code: `late final _controller = AnimationController(\n  vsync: this,\n  duration: const Duration(milliseconds: 1200),\n);\n\n// Tetiklenen Komut:\n${calls[cmd]};\n\n@override\nvoid dispose() {\n  _controller.dispose(); // Bellek güvenliği için zorunlu!\n  super.dispose();\n}`,
+        blocks: [
+          { label: '1. KOMUT ÇAĞRISI', detail: calls[cmd], color: '#F59E0B' },
+          { label: '2. TICKER (VSYNC: THIS)', detail: 'Donanım VSync darbesiyle her karede yeni değer üretir', color: '#38BDF8' },
+          { label: '3. ANIMATEDBUILDER İZOLASYONU', detail: 'Önbellekli child korunur, sadece Transform güncellenir', color: '#10B981' }
+        ],
+        logIt
+      });
+    }
+
+    // =========================================================================
+    // SEKME 2: HERO & PAGEROUTEBUILDER (GERÇEK MOBİL ROTA GEÇİŞİ)
+    // =========================================================================
+    let heroOffsetCss = 'translateY(100%)';
+    let heroOffsetName = 'Offset(0.0, 1.0) Alttan';
+
+    function setHeroOffset(name, css) {
+      heroOffsetName = name;
+      heroOffsetCss = css;
+      const routeEl = document.getElementById('mobile-detail-route');
+      routeEl.style.transform = css;
+      updateInspector({
+        trigger: 'OFFSET SEÇİLDİ',
+        title: 'SlideTransition Başlangıç Yönü: ' + name,
+        api: `Tween<Offset>(begin: ${name.split(' ')[0]}, end: Offset.zero)`,
+        desc: 'SlideTransition piksel değil, ekran boyutunun katlarını kullanır. Şimdi yukarıdaki Hero kartlarından birine dokunarak yeni sayfanın bu yönden kayarak açılışını izleyin!',
+        code: `final tween = Tween<Offset>(\n  begin: const ${name.split(' ')[0]},\n  end: Offset.zero,\n).chain(CurveTween(curve: Curves.easeOutCubic));\n\nreturn SlideTransition(position: animation.drive(tween), child: child);`,
+        blocks: [
+          { label: '1. KESİRLİ KOORDİNAT', detail: 'Ekran genişliği/yüksekliği 1.0 birim kabul edilir', color: '#38BDF8' },
+          { label: '2. ANIMATION.DRIVE(TWEEN)', detail: 'Rota animasyonu Offset değerine dönüştürülür', color: '#A855F7' }
+        ],
+        logIt: true
+      });
+    }
+
+    function openMobileHeroRoute(emoji, title, tag, colorHex) {
+      const routeEl = document.getElementById('mobile-detail-route');
+      const heroBox = document.getElementById('detail-hero-box');
+      document.getElementById('detail-hero-title').innerText = title;
+      document.getElementById('detail-hero-tag').innerText = `Hero(tag: '${tag}') İniş Yaptı!`;
+      heroBox.innerText = emoji;
+      heroBox.style.borderColor = colorHex;
+
+      routeEl.style.pointerEvents = 'auto';
+      routeEl.style.opacity = '1';
+      routeEl.style.transform = 'translate(0, 0)';
+      setTimeout(() => { heroBox.style.transform = 'scale(1)'; }, 40);
+
+      inspectHero(`CLICK (${tag} Uçuşu Başladı)`, tag, true);
+    }
+
+    function closeMobileHeroRoute() {
+      const routeEl = document.getElementById('mobile-detail-route');
+      const heroBox = document.getElementById('detail-hero-box');
+      heroBox.style.transform = 'scale(0.35)';
+      routeEl.style.opacity = '0';
+      routeEl.style.transform = heroOffsetCss;
+      routeEl.style.pointerEvents = 'none';
+      inspectHero('CLICK (Navigator.pop ile Geri Uçuş)', 'hero-dash', true);
+    }
+
+    function inspectHero(trig, tag = 'hero-dash', logIt = false) {
+      updateInspector({
+        trigger: trig,
+        title: `Hero(tag: "${tag}") + PageRouteBuilder Geçişi`,
+        api: `Navigator.push(PageRouteBuilder(...)) + Hero(tag: "${tag}")`,
+        desc: 'Kalkışta (t=0.0) kaynak ve hedef Hero koordinatları (Rect) hesaplanır. Widget her iki sayfanın üstündeki şeffaf Overlay katmanına taşınır ve MaterialRectArcTween ile kavisli uçarak hedefe iner.',
+        code: `// Kaynak ve Hedef Rotada Birebir Aynı tag Zorunludur:\nHero(\n  tag: '${tag}',\n  child: AvatarWidget(),\n);\n\n// Özel Rota Geçişi:\nSlideTransition(\n  position: animation.drive(Tween(begin: Offset(0, 1), end: Offset.zero)),\n  child: child,\n);`,
+        blocks: [
+          { label: '1. TAG EŞLEŞMESİ', detail: `Kaynak ve hedef rotadaki Hero(tag: "${tag}") eşleştirildi`, color: '#F59E0B' },
+          { label: '2. OVERLAY KATMANINDA UÇUŞ', detail: 'MaterialRectArcTween ile kavisli yörüngede uçar', color: '#A855F7' },
+          { label: '3. SLIDETRANSITION ROTA', detail: heroOffsetName + ' ile detay ekranı yerleşir', color: '#10B981' }
+        ],
+        logIt
+      });
+    }
+
+    // =========================================================================
+    // SEKME 3: STAGGERED INTERVAL
+    // =========================================================================
+    let stagT = 0.0, stagDir = 0;
+
+    function iv(t, b, e) {
+      if (t <= b) return 0;
+      if (t >= e) return 1;
+      return (t - b) / (e - b);
+    }
+
+    function tickStaggered() {
+      if (stagDir !== 0) {
+        stagT = Math.max(0, Math.min(1, stagT + stagDir * 0.008));
+        if (stagT >= 1 || stagT <= 0) stagDir = 0;
+
+        const op = 0.25 + 0.75 * iv(stagT, 0.0, 0.20);
+        const w = 68 + 160 * iv(stagT, 0.15, 0.45);
+        const h = 55 + 65 * iv(stagT, 0.40, 0.70);
+        const rad = 10 + 50 * iv(stagT, 0.60, 0.85);
+        const colP = iv(stagT, 0.75, 1.0);
+
+        const box = document.getElementById('stag-box');
+        box.style.opacity = op;
+        box.style.width = w + 'px';
+        box.style.height = h + 'px';
+        box.style.borderRadius = rad + 'px';
+        box.style.background = colP > 0.5 ? '#10B981' : (iv(stagT, 0.4, 0.7) > 0.3 ? '#8B5CF6' : '#3B82F6');
+        box.innerText = `t = ${stagT.toFixed(2)}\n${Math.round(w)}×${Math.round(h)}`;
+
+        document.getElementById('stag-pct').innerText = `Saat: %${Math.round(stagT * 100)}`;
+        for (let i = 1; i <= 5; i++) {
+          document.getElementById('playhead-' + i).style.left = (stagT * 100) + '%';
+        }
+      }
+      requestAnimationFrame(tickStaggered);
+    }
+    requestAnimationFrame(tickStaggered);
+
+    function runStaggered(dir) {
+      if (dir === 1 && stagT >= 0.99) stagT = 0;
+      if (dir === -1 && stagT <= 0.01) stagT = 1;
+      stagDir = dir;
+      inspectStaggered('CLICK (Koreografi Başladı)', dir === 1 ? '_controller.forward()' : '_controller.reverse()', true);
+    }
+
+    function inspectStaggered(trig, call, logIt = false) {
+      updateInspector({
+        trigger: trig,
+        title: 'Kademeli (Staggered) Koreografi ve Interval(begin, end)',
+        api: call + ' + Interval(0.15, 0.45, curve: Curves.easeOut)',
+        desc: '5 farklı görsel özellik için 5 ayrı Controller açmak yerine TEK BİR AnimationController kullanılır. Her Tween kendi Interval yüzdelik diliminde çalışır.',
+        code: `width = Tween<double>(begin: 68, end: 228).animate(\n  CurvedAnimation(\n    parent: _controller,\n    // Sadece %15 ile %45 arasındaki zaman diliminde aktif:\n    curve: const Interval(0.15, 0.45, curve: Curves.easeOut),\n  ),\n);`,
+        blocks: [
+          { label: '1. TEK ANA SAAT', detail: 'AnimationController 0.0 ➔ 1.0 arasında ilerler', color: '#F59E0B' },
+          { label: '2. INTERVAL DİLİMLEME', detail: 'Her özellik yalnızca kendi [begin, end] penceresinde hareket eder', color: '#38BDF8' },
+          { label: '3. SIFIR SENKRON KAYMASI', detail: 'Tek komutla tüm koreografi ileri veya geri sarılır', color: '#10B981' }
+        ],
+        logIt
+      });
+    }
+
+    // =========================================================================
+    // SEKME 4: FİZİK SPRINGSIMULATION
+    // =========================================================================
+    let physX = 0, physY = 0, velX = 0, velY = 0;
+    let draggingPhys = false, startMouseX = 0, startMouseY = 0;
+
+    function startDragPhys(e) {
+      draggingPhys = true;
+      startMouseX = e.clientX - physX;
+      startMouseY = e.clientY - physY;
+      velX = 0; velY = 0;
+    }
+    window.addEventListener('mousemove', (e) => {
+      if (!draggingPhys) return;
+      physX = Math.max(-105, Math.min(105, e.clientX - startMouseX));
+      physY = Math.max(-55, Math.min(55, e.clientY - startMouseY));
+      renderPhysCard('Sürükleniyor (onPanUpdate)');
+    });
+    window.addEventListener('mouseup', () => {
+      if (!draggingPhys) return;
+      draggingPhys = false;
+      inspectPhysics('DRAG END (Yay Fiziği Başladı)', true);
+    });
+
+    function flingPhysicsCard() {
+      physX = 100;
+      physY = -50;
+      velX = -15;
+      velY = 10;
+      inspectPhysics('CLICK (Yay Fırlatma Simülasyonu)', true);
+    }
+
+    function tickPhysics() {
+      if (!draggingPhys && (Math.abs(physX) > 0.2 || Math.abs(physY) > 0.2 || Math.abs(velX) > 0.2 || Math.abs(velY) > 0.2)) {
+        const mass = parseFloat(document.getElementById('rng-mass').value);
+        const stiffness = parseFloat(document.getElementById('rng-stiff').value);
+        const damping = parseFloat(document.getElementById('rng-damp').value);
+        const dt = 0.016;
+
+        const forceX = -stiffness * physX - damping * velX;
+        const forceY = -stiffness * physY - damping * velY;
+        velX += (forceX / mass) * dt;
+        velY += (forceY / mass) * dt;
+        physX += velX;
+        physY += velY;
+        renderPhysCard('SpringSimulation Aktif');
+      }
+      requestAnimationFrame(tickPhysics);
+    }
+    requestAnimationFrame(tickPhysics);
+
+    function renderPhysCard(stateText) {
+      const card = document.getElementById('phys-card');
+      card.style.transform = `translate(${physX.toFixed(1)}px, ${physY.toFixed(1)}px)`;
+      document.getElementById('phys-telemetry').innerText =
+        `Alignment(${(physX / 105).toFixed(2)}, ${(physY / 55).toFixed(2)}) · ${stateText}`;
+    }
+
+    function inspectPhysics(trig, logIt = false) {
+      const m = document.getElementById('rng-mass').value;
+      const s = document.getElementById('rng-stiff').value;
+      const d = document.getElementById('rng-damp').value;
+      updateInspector({
+        trigger: trig,
+        title: 'SpringSimulation + _controller.animateWith(simulation)',
+        api: `SpringSimulation(SpringDescription(mass: ${m}, stiffness: ${s}, damping: ${d}), 0, 1, -unitVelocity)`,
+        desc: 'Kullanıcı kartı bıraktığında sabit bir Duration kullanılmaz! GestureDetector onPanEnd hızı birim hıza çevrilir ve Hooke Yay Yasası ile kart merkeze salınarak döner.',
+        code: `final spring = SpringDescription(\n  mass: ${m},      // Kütle (Atalet)\n  stiffness: ${s}, // Yay sertliği\n  damping: ${d},    // Sönümleme (Sürtünme)\n);\nfinal sim = SpringSimulation(spring, 0, 1, -unitVelocity);\n_controller.animateWith(sim);`,
+        blocks: [
+          { label: '1. GESTUREDETECTOR (ONPANEND)', detail: 'Parmak bırakma hızı (pixelsPerSecond) ölçüldü', color: '#F59E0B' },
+          { label: '2. SPRINGDESCRIPTION', detail: `mass: ${m}, stiffness: ${s}, damping: ${d}`, color: '#A855F7' },
+          { label: '3. CONTROLLER.ANIMATEWITH(SIM)', detail: 'Yay enerjisi sönümlenene kadar doğal salınım üretilir', color: '#10B981' }
+        ],
+        logIt
+      });
+    }
+  </script>
+</body>
+</html>
