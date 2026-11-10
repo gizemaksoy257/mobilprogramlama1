@@ -4,28 +4,28 @@
 
 ## İçindekiler
 
-- [Flutter'da yerelleştirmeye giriş](#flutterda-yerelleştirmeye-giriş)
-  - [`flutter_localizations` ile uluslararasılaştırılmış bir uygulama kurmak](#flutter_localizations-ile-uluslararasılaştırılmış-bir-uygulama-kurmak)
-  - [Yerel ayarı geçersiz kılmak (override)](#yerel-ayarı-geçersiz-kılmak-override)
-  - [Kendi yerelleştirilmiş mesajlarınızı eklemek](#kendi-yerelleştirilmiş-mesajlarınızı-eklemek)
-  - [Yer tutucular, çoğullar ve seçimler](#yer-tutucular-çoğullar-ve-seçimler)
-  - [Kaçış (escaping) sözdizimi](#kaçış-escaping-sözdizimi)
-  - [Sayı ve para birimi içeren mesajlar](#sayı-ve-para-birimi-içeren-mesajlar)
-  - [Tarih içeren mesajlar](#tarih-içeren-mesajlar)
-  - [iOS için yerelleştirme: iOS uygulama paketini güncellemek](#ios-için-yerelleştirme-ios-uygulama-paketini-güncellemek)
-- [İleri düzey özelleştirme konuları](#i̇leri-düzey-özelleştirme-konuları)
-  - [Gelişmiş yerel ayar tanımı](#gelişmiş-yerel-ayar-tanımı)
-  - [Yerel ayarı takip etmek: `Locale` sınıfı ve `Localizations` widget'ı](#yerel-ayarı-takip-etmek-locale-sınıfı-ve-localizations-widgetı)
-  - [Uygulamanın `supportedLocales` parametresini belirlemek](#uygulamanın-supportedlocales-parametresini-belirlemek)
-  - [`l10n.yaml` dosyasını yapılandırmak](#l10nyaml-dosyasını-yapılandırmak)
-- [Flutter'da uluslararasılaştırma nasıl çalışır?](#flutterda-uluslararasılaştırma-nasıl-çalışır)
-  - [Yerelleştirilmiş değerleri yüklemek ve almak](#yerelleştirilmiş-değerleri-yüklemek-ve-almak)
-  - [Uygulamanın yerelleştirilmiş kaynakları için bir sınıf tanımlamak](#uygulamanın-yerelleştirilmiş-kaynakları-için-bir-sınıf-tanımlamak)
-  - [Yeni bir dil için destek eklemek](#yeni-bir-dil-için-destek-eklemek)
-- [Alternatif uluslararasılaştırma iş akışları](#alternatif-uluslararasılaştırma-iş-akışları)
-  - [Yerelleştirilmiş kaynaklar için alternatif bir sınıf](#yerelleştirilmiş-kaynaklar-için-alternatif-bir-sınıf)
-  - [Dart `intl` araçlarını kullanmak](#dart-intl-araçlarını-kullanmak)
-- [Daha fazla bilgi](#daha-fazla-bilgi)
+- [Flutter'da yerelleştirmeye giriş](#giris)
+  - [`flutter_localizations` ile uluslararasılaştırılmış bir uygulama kurmak](#kurulum)
+  - [Yerel ayarı geçersiz kılmak (override)](#override)
+  - [Kendi yerelleştirilmiş mesajlarınızı eklemek](#mesaj-ekleme)
+  - [Yer tutucular, çoğullar ve seçimler](#yer-tutucular)
+  - [Kaçış (escaping) sözdizimi](#kacis)
+  - [Sayı ve para birimi içeren mesajlar](#sayilar)
+  - [Tarih içeren mesajlar](#tarihler)
+  - [iOS için yerelleştirme: iOS uygulama paketini güncellemek](#ios)
+- [İleri düzey özelleştirme konuları](#ileri)
+  - [Gelişmiş yerel ayar tanımı](#gelismis-locale)
+  - [Yerel ayarı takip etmek: `Locale` sınıfı ve `Localizations` widget'ı](#locale-takip)
+  - [Uygulamanın `supportedLocales` parametresini belirlemek](#supported-locales)
+  - [`l10n.yaml` dosyasını yapılandırmak](#l10n-yaml)
+- [Flutter'da uluslararasılaştırma nasıl çalışır?](#nasil-calisir)
+  - [Yerelleştirilmiş değerleri yüklemek ve almak](#yukleme)
+  - [Uygulamanın yerelleştirilmiş kaynakları için bir sınıf tanımlamak](#sinif-tanimlama)
+  - [Yeni bir dil için destek eklemek](#yeni-dil)
+- [Alternatif uluslararasılaştırma iş akışları](#alternatif)
+  - [Yerelleştirilmiş kaynaklar için alternatif bir sınıf](#alternatif-sinif)
+  - [Dart `intl` araçlarını kullanmak](#dart-araclari)
+- [Daha fazla bilgi](#daha-fazla)
 
 ---
 
@@ -40,12 +40,14 @@ Uygulamanız başka bir dil konuşan kullanıcılara dağıtılabilecekse, onu u
 
 Bu sayfa, bir Flutter uygulamasını `MaterialApp` ve `CupertinoApp` sınıflarını kullanarak yerelleştirmek için gereken kavramları ve iş akışlarını ele alır; çünkü uygulamaların çoğu bu şekilde yazılır. Bununla birlikte, daha alt seviyedeki `WidgetsApp` sınıfıyla yazılmış uygulamalar da aynı sınıflar ve mantık kullanılarak uluslararasılaştırılabilir.
 
+<a id="giris"></a>
 ## Flutter'da yerelleştirmeye giriş
 
 Bu bölüm, yeni bir Flutter uygulamasının nasıl oluşturulacağını ve uluslararasılaştırılacağını, ayrıca hedef platformun gerektirebileceği ek kurulumları anlatan bir eğitim sunar.
 
 Bu örneğin kaynak kodunu [`gen_l10n_example`](https://github.com/flutter/website/tree/main/examples/internationalization/gen_l10n_example) içinde bulabilirsiniz.
 
+<a id="kurulum"></a>
 ### `flutter_localizations` ile uluslararasılaştırılmış bir uygulama kurmak
 
 Flutter varsayılan olarak yalnızca ABD İngilizcesi (US English) yerelleştirmelerini sağlar. Başka diller için destek eklemek isteyen bir uygulama, ek `MaterialApp` (veya `CupertinoApp`) özelliklerini belirtmeli ve `flutter_localizations` adlı paketi projeye dahil etmelidir.
@@ -114,6 +116,7 @@ Hedef platformun yerel ayarını İspanyolca (`es`) olarak değiştirmeyi deneyi
 
 Bu uygulama özellikleri, bağlı oldukları türler ve uluslararasılaştırılmış Flutter uygulamalarının genellikle nasıl yapılandırıldığı hakkında daha fazla bilgi bu sayfanın devamında yer almaktadır.
 
+<a id="override"></a>
 ### Yerel ayarı geçersiz kılmak (override)
 
 `Localizations.override`, `Localizations` widget'ı için bir fabrika yapıcısıdır (factory constructor). Uygulamanızın bir bölümünün, cihazınız için yapılandırılmış yerel ayardan farklı bir yerel ayarla yerelleştirilmesi gereken (genellikle nadir görülen) durumlara olanak tanır.
@@ -156,6 +159,7 @@ Widget build(BuildContext context) {
 
 Uygulamayı hot reload yapın; `CalendarDatePicker` widget'ı İspanyolca olarak yeniden çizilmelidir.
 
+<a id="mesaj-ekleme"></a>
 ### Kendi yerelleştirilmiş mesajlarınızı eklemek
 
 Uygulamanıza yerelleştirilmiş metin eklemek için aşağıdaki adımları tamamlayın:
@@ -279,6 +283,7 @@ return MaterialApp(
   onGenerateTitle: (context) => DemoLocalizations.of(context).title,
 ```
 
+<a id="yer-tutucular"></a>
 ### Yer tutucular, çoğullar ve seçimler
 
 > **İpucu:** VS Code kullanıyorsanız [arb-editor eklentisini](https://marketplace.visualstudio.com/items?itemName=Google.arb-editor) ekleyin. Bu eklenti, `.arb` şablon dosyalarını düzenlemeye yardımcı olmak için sözdizimi vurgulama, kod parçacıkları (snippet), hata tanılama ve hızlı düzeltmeler ekler.
@@ -397,6 +402,7 @@ return Column(
 
 `select` ifadelerini kullanırken parametre ile gerçek değer arasındaki karşılaştırmanın büyük/küçük harfe duyarlı olduğunu unutmayın. Yani `AppLocalizations.of(context)!.pronoun("Male")` varsayılan olarak "other" durumuna düşer ve "they" döndürür.
 
+<a id="kacis"></a>
 ### Kaçış (escaping) sözdizimi
 
 Bazen `{` ve `}` gibi belirteçleri (token) normal karakter olarak kullanmanız gerekir. Bu belirteçlerin ayrıştırılmasını (parse) engellemek için `l10n.yaml` dosyasına aşağıdakini ekleyerek `use-escaping` bayrağını etkinleştirin:
@@ -419,6 +425,7 @@ Ortaya çıkan metin şöyledir:
 "Hello! {Isn't} this a wonderful day?"
 ```
 
+<a id="sayilar"></a>
 ### Sayı ve para birimi içeren mesajlar
 
 Para birimi değerlerini temsil edenler de dahil olmak üzere sayılar, farklı yerel ayarlarda çok farklı şekillerde gösterilir. `flutter_localizations` içindeki yerelleştirme üretme aracı, sayıları yerel ayara ve istenen biçime göre biçimlendirmek için `intl` paketindeki [`NumberFormat`](https://api.flutter.dev/flutter/package-intl_intl/NumberFormat-class.html) sınıfını kullanır.
@@ -457,6 +464,7 @@ Tabloda yıldızla (*) işaretlenmiş `NumberFormat` yapıcıları isteğe bağl
 }
 ```
 
+<a id="tarihler"></a>
 ### Tarih içeren mesajlar
 
 Tarih metinleri hem yerel ayara hem de uygulamanın ihtiyaçlarına bağlı olarak birçok farklı şekilde biçimlendirilir.
@@ -484,6 +492,7 @@ Yerel ayarı ABD İngilizcesi olan bir uygulamada aşağıdaki ifade "7/9/1959" 
 AppLocalizations.of(context).helloWorldOn(DateTime.utc(1959, 7, 9))
 ```
 
+<a id="ios"></a>
 ### iOS için yerelleştirme: iOS uygulama paketini güncellemek
 
 Yerelleştirmeler Flutter tarafından yönetilse de desteklenen dilleri Xcode projesine eklemeniz gerekir. Bu, App Store'daki uygulama kaydınızın desteklenen dilleri doğru göstermesini sağlar.
@@ -498,10 +507,12 @@ Uygulamanızın desteklediği yerel ayarları yapılandırmak için şu adımlar
 
 ---
 
+<a id="ileri"></a>
 ## İleri düzey özelleştirme konuları
 
 Bu bölüm, yerelleştirilmiş bir Flutter uygulamasını özelleştirmenin ek yollarını ele alır.
 
+<a id="gelismis-locale"></a>
 ### Gelişmiş yerel ayar tanımı
 
 Birden çok varyantı olan bazı diller, doğru şekilde ayırt edilebilmek için yalnızca bir dil kodundan fazlasına ihtiyaç duyar.
@@ -543,6 +554,7 @@ Bu açık ve tam tanım, uygulamanızın bu ülke kodlarının tüm kombinasyonl
 
 Çince başlıca örnek olsa da Fransızca (`fr_FR`, `fr_CA`) gibi diğer diller de daha incelikli bir yerelleştirme için tam olarak ayırt edilmelidir.
 
+<a id="locale-takip"></a>
 ### Yerel ayarı takip etmek: `Locale` sınıfı ve `Localizations` widget'ı
 
 [`Locale`](https://api.flutter.dev/flutter/dart-ui/Locale-class.html) sınıfı kullanıcının dilini tanımlar. Mobil cihazlar, genellikle bir sistem ayarları menüsü aracılığıyla tüm uygulamalar için yerel ayar belirlemeyi destekler. Uluslararasılaştırılmış uygulamalar buna yerel ayara özgü değerler göstererek yanıt verir. Örneğin kullanıcı cihazın yerel ayarını İngilizceden Fransızcaya değiştirirse, başlangıçta "Hello World" gösteren bir `Text` widget'ı "Bonjour le monde" ile yeniden oluşturulur.
@@ -555,6 +567,7 @@ Bir uygulamanın mevcut yerel ayarını her zaman `Localizations.localeOf()` ile
 Locale myLocale = Localizations.localeOf(context);
 ```
 
+<a id="supported-locales"></a>
 ### Uygulamanın `supportedLocales` parametresini belirlemek
 
 `flutter_localizations` kütüphanesi birçok dili ve dil varyantını desteklese de varsayılan olarak yalnızca İngilizce çeviriler mevcuttur. Hangi dillerin tam olarak destekleneceğine karar vermek geliştiriciye kalmıştır.
@@ -571,6 +584,7 @@ MaterialApp(
 );
 ```
 
+<a id="l10n-yaml"></a>
 ### `l10n.yaml` dosyasını yapılandırmak
 
 `l10n.yaml` dosyası, `gen-l10n` aracını yapılandırarak şunları belirtmenize olanak tanır:
@@ -606,10 +620,12 @@ Seçeneklerin tam listesi için komut satırında `flutter gen-l10n --help` komu
 
 ---
 
+<a id="nasil-calisir"></a>
 ## Flutter'da uluslararasılaştırma nasıl çalışır?
 
 Bu bölüm, Flutter'da yerelleştirmenin nasıl çalıştığına dair teknik ayrıntıları ele alır. Kendi yerelleştirilmiş mesaj setinizi desteklemeyi planlıyorsanız aşağıdaki içerik faydalı olacaktır. Aksi hâlde bu bölümü atlayabilirsiniz.
 
+<a id="yukleme"></a>
 ### Yerelleştirilmiş değerleri yüklemek ve almak
 
 `Localizations` widget'ı, yerelleştirilmiş değer koleksiyonları içeren nesneleri yüklemek ve aramak için kullanılır. Uygulamalar bu nesnelere [`Localizations.of(context,type)`](https://api.flutter.dev/flutter/widgets/Localizations/of.html) ile başvurur. Cihazın yerel ayarı değişirse `Localizations` widget'ı yeni yerel ayarın değerlerini otomatik olarak yükler ve ardından onu kullanan widget'ları yeniden oluşturur. Bunun nedeni `Localizations`'ın bir [`InheritedWidget`](https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html) gibi çalışmasıdır. Bir build fonksiyonu kalıtsal bir widget'a (inherited widget) başvurduğunda, o kalıtsal widget'a örtük bir bağımlılık oluşur. Kalıtsal widget değiştiğinde (`Localizations` widget'ının yerel ayarı değiştiğinde), ona bağlı bağlamlar (context) yeniden oluşturulur.
@@ -637,13 +653,14 @@ static MaterialLocalizations of(BuildContext context) {
 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
 ```
 
+<a id="sinif-tanimlama"></a>
 ### Uygulamanın yerelleştirilmiş kaynakları için bir sınıf tanımlamak
 
 Uluslararasılaştırılmış bir Flutter uygulaması oluşturmak genellikle uygulamanın yerelleştirilmiş değerlerini kapsülleyen sınıfla başlar. Aşağıdaki örnek bu tür sınıfların tipik bir örneğidir.
 
 Bu uygulamanın tam kaynak kodu: [`intl_example`](https://github.com/flutter/website/tree/main/examples/internationalization/intl_example).
 
-Bu örnek, [`intl`](https://pub.dev/packages/intl) paketinin sağladığı API'lere ve araçlara dayanır. [Yerelleştirilmiş kaynaklar için alternatif bir sınıf](#yerelleştirilmiş-kaynaklar-için-alternatif-bir-sınıf) bölümü, `intl` paketine bağlı olmayan [bir örneği](https://github.com/flutter/website/tree/main/examples/internationalization/minimal) anlatır.
+Bu örnek, [`intl`](https://pub.dev/packages/intl) paketinin sağladığı API'lere ve araçlara dayanır. [Yerelleştirilmiş kaynaklar için alternatif bir sınıf](#alternatif-sinif) bölümü, `intl` paketine bağlı olmayan [bir örneği](https://github.com/flutter/website/tree/main/examples/internationalization/minimal) anlatır.
 
 `DemoLocalizations` sınıfı (aşağıdaki kod parçasında tanımlanmıştır), uygulamanın desteklediği yerel ayarlara çevrilmiş metinlerini (bu örnekte yalnızca bir tane) içerir. Bunları aramak için Dart'ın [`intl`](https://pub.dev/packages/intl) paketi tarafından üretilen `initializeMessages()` fonksiyonunu ve [`Intl.message()`](https://pub.dev/documentation/intl/latest/intl/Intl/message.html) metodunu kullanır.
 
@@ -680,8 +697,9 @@ class DemoLocalizations {
 }
 ```
 
-`intl` paketine dayanan bir sınıf, `initializeMessages()` fonksiyonunu ve `Intl.message()` için yerel ayar başına arka depoyu (backing store) sağlayan, üretilmiş bir mesaj kataloğunu içe aktarır. Mesaj kataloğu, `Intl.message()` çağrıları içeren sınıflar için kaynak kodu analiz eden bir [`intl` aracı](#dart-intl-araçlarını-kullanmak) tarafından üretilir. Bu örnekte bu yalnızca `DemoLocalizations` sınıfıdır.
+`intl` paketine dayanan bir sınıf, `initializeMessages()` fonksiyonunu ve `Intl.message()` için yerel ayar başına arka depoyu (backing store) sağlayan, üretilmiş bir mesaj kataloğunu içe aktarır. Mesaj kataloğu, `Intl.message()` çağrıları içeren sınıflar için kaynak kodu analiz eden bir [`intl` aracı](#dart-araclari) tarafından üretilir. Bu örnekte bu yalnızca `DemoLocalizations` sınıfıdır.
 
+<a id="yeni-dil"></a>
 ### Yeni bir dil için destek eklemek
 
 [`GlobalMaterialLocalizations`](https://api.flutter.dev/flutter/flutter_localizations/GlobalMaterialLocalizations-class.html) içinde yer almayan bir dili desteklemesi gereken bir uygulamanın ek iş yapması gerekir: kelime veya ifadeler için yaklaşık 70 çeviri ("yerelleştirme") ve yerel ayarın tarih kalıpları ile sembollerini sağlamalıdır.
@@ -809,10 +827,12 @@ const MaterialApp(
 
 ---
 
+<a id="alternatif"></a>
 ## Alternatif uluslararasılaştırma iş akışları
 
 Bu bölüm, Flutter uygulamanızı uluslararasılaştırmak için farklı yaklaşımları anlatır.
 
+<a id="alternatif-sinif"></a>
 ### Yerelleştirilmiş kaynaklar için alternatif bir sınıf
 
 Önceki örnek Dart `intl` paketi temel alınarak tanımlanmıştı. Sadelik için ya da belki farklı bir i18n çerçevesiyle (framework) entegrasyon için yerelleştirilmiş değerleri yönetmede kendi yaklaşımınızı seçebilirsiniz.
@@ -867,6 +887,7 @@ class DemoLocalizationsDelegate
 }
 ```
 
+<a id="dart-araclari"></a>
 ### Dart `intl` araçlarını kullanmak
 
 Dart [`intl`](https://pub.dev/packages/intl) paketini kullanarak bir API oluşturmadan önce `intl` paketinin dokümantasyonunu inceleyin. Aşağıdaki liste, `intl` paketine bağlı bir uygulamayı yerelleştirme sürecini özetler:
@@ -904,6 +925,7 @@ $ dart run intl_translation:generate_from_arb \
 
 ---
 
+<a id="daha-fazla"></a>
 ## Daha fazla bilgi
 
 En iyi kod okuyarak öğreniyorsanız aşağıdaki örneklere göz atın.
@@ -913,5 +935,5 @@ En iyi kod okuyarak öğreniyorsanız aşağıdaki örneklere göz atın.
 - [`intl_example`](https://github.com/flutter/website/tree/main/examples/internationalization/intl_example)
   [`intl`](https://pub.dev/packages/intl) paketinin sağladığı API'leri ve araçları kullanır.
 
-Dart'ın `intl` paketi sizin için yeniyse [Dart `intl` araçlarını kullanmak](#dart-intl-araçlarını-kullanmak) bölümüne göz atın.
+Dart'ın `intl` paketi sizin için yeniyse [Dart `intl` araçlarını kullanmak](#dart-araclari) bölümüne göz atın.
 
